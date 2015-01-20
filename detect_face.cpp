@@ -35,6 +35,9 @@ FaceDetector::FaceDetector(IplImage* img)
 
 FaceDetector::~FaceDetector()
 {
+	if(Frame)
+		cvReleaseImage(&Frame);
+	
 	if(grayFrame)
 		cvReleaseImage(&grayFrame);
 
