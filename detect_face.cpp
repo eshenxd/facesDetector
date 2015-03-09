@@ -15,6 +15,11 @@ FaceDetector::FaceDetector(IplImage* img)
 	width=img->width;
 	height=img->height;
 
+	//double paramtmp[4] = { 1.2, 1.6, 2.0, 3.0 };
+
+	//param = paramtmp;
+	//param = { 1.2, 1.6, 2.0, 3.0 };
+
 	scale=2;
 
 	Frame=cvCreateImage(cvSize(width,height),img->depth,img->nChannels);
@@ -51,6 +56,11 @@ FaceDetector::~FaceDetector()
 	cvReleaseHaarClassifierCascade(&cascade_faces);
 }
 
+IplImage* FaceDetector::getImageGray(){
+
+	return grayFrame;
+}
+
 int FaceDetector::runFaceDetector()
 {
 	if(Frame->nChannels==3)
@@ -77,9 +87,22 @@ int FaceDetector::runFaceDetector()
 	//对图像进行直方图均衡化，也即增强图像的亮度和对比度
 	cvEqualizeHist( small_img, small_img);
 	
-	faces=cvHaarDetectObjects(small_img, cascade_faces, storage_faces,
-		1.2, 2.0, 0/*CV_HAAR_DO_CANNY_PRUNING*/,
-		cvSize(50, 50) );
+	int i = 0;//初始化迭代次数
+
+	double param[4] = { 1.2, 1.6, 2.0, 3.0 };
+
+	for (int i = 0; i < 4 ; i++){
+
+		faces = cvHaarDetectObjects(small_img, cascade_faces, storage_faces,
+			param[i], 2.0, 0/*CV_HAAR_DO_CANNY_PRUNING*/,
+			cvSize(20, 20));
+
+		if (faces->total == 1)break;
+	}
+
+	//faces=cvHaarDetectObjects(small_img, cascade_faces, storage_faces,
+	//	1.1, 2.0, 0/*CV_HAAR_DO_CANNY_PRUNING*/,
+	//	cvSize(20, 20) );
 
 	faceCount=faces->total;
 

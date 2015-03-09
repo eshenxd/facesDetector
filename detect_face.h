@@ -21,12 +21,15 @@ public:
 	int runFaceDetector();
 	int getDetectFaceCount();
 	int getDetectFacePos(int faceIndex, int pos[4]);
+	IplImage* getImageGray();
 
 protected:
 
 private:
 	int width;
 	int height;
+
+	//double* param;
 
 	IplImage* Frame;
 	IplImage* grayFrame;
