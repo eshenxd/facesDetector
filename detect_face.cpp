@@ -8,26 +8,12 @@
 
 using namespace std;
 
-char* cascade_name_faces="face.xml";
+//char* cascade_name_faces="face.xml";
 
-FaceDetector::FaceDetector(IplImage* img)
+FaceDetector::FaceDetector(char* cascade_name_faces)
 {
-	width=img->width;
-	height=img->height;
-
-	//double paramtmp[4] = { 1.2, 1.6, 2.0, 3.0 };
-
-	//param = paramtmp;
-	//param = { 1.2, 1.6, 2.0, 3.0 };
-
-	scale=2;
-
-	Frame=cvCreateImage(cvSize(width,height),img->depth,img->nChannels);
-	cvCopy(img,Frame);
-
-	grayFrame=cvCreateImage(cvSize(width,height),8,1);
-	small_img=cvCreateImage(cvSize(cvRound(width/scale),cvRound(height/scale)),8,1);
-
+	faceModelFile = cascade_name_faces;
+	
 	storage_faces=cvCreateMemStorage(0);
 
 	cascade_faces = (CvHaarClassifierCascade*)cvLoad( cascade_name_faces, 0, 0, 0 );
@@ -40,20 +26,42 @@ FaceDetector::FaceDetector(IplImage* img)
 
 FaceDetector::~FaceDetector()
 {
-	if(Frame)
-		cvReleaseImage(&Frame);
-	
-	if(grayFrame)
-		cvReleaseImage(&grayFrame);
-
-	if(small_img)
-		cvReleaseImage(&small_img);
-
 	if(facePos)
 		delete[] facePos;
 
 	cvReleaseMemStorage(&storage_faces);
 	cvReleaseHaarClassifierCascade(&cascade_faces);
+}
+
+
+bool FaceDetector::initFaceDetector(IplImage* imageIn){
+
+	width=imageIn->width;
+	height=imageIn->height;
+
+	scale=2;
+
+	Frame=cvCreateImage(cvSize(width,height),imageIn->depth,imageIn->nChannels);
+	cvCopy(imageIn,Frame);
+
+	grayFrame=cvCreateImage(cvSize(width,height),8,1);
+	small_img=cvCreateImage(cvSize(cvRound(width/scale),cvRound(height/scale)),8,1);
+
+	return true;
+
+}
+
+void FaceDetector::releaseFaceDetector()
+{
+	if (Frame)
+		cvReleaseImage(&Frame);
+
+	if (grayFrame)
+		cvReleaseImage(&grayFrame);
+
+	if (small_img)
+		cvReleaseImage(&small_img);
+	
 }
 
 IplImage* FaceDetector::getImageGray(){
@@ -94,15 +102,12 @@ int FaceDetector::runFaceDetector()
 	for (int i = 0; i < 4 ; i++){
 
 		faces = cvHaarDetectObjects(small_img, cascade_faces, storage_faces,
-			param[i], 2.0, 0/*CV_HAAR_DO_CANNY_PRUNING*/,
+			1.1, 3, 0/*CV_HAAR_DO_CANNY_PRUNING*/,
 			cvSize(20, 20));
-
+		
 		if (faces->total == 1)break;
 	}
 
-	//faces=cvHaarDetectObjects(small_img, cascade_faces, storage_faces,
-	//	1.1, 2.0, 0/*CV_HAAR_DO_CANNY_PRUNING*/,
-	//	cvSize(20, 20) );
 
 	faceCount=faces->total;
 
@@ -125,6 +130,10 @@ int FaceDetector::getDetectFaceCount()
 	return faceCount;
 }
 
+/* 获取检测到的所有人脸的位置，
+ * faceIdx为人脸序列号，pos存
+ *储人脸矩形的坐标
+ */
 int FaceDetector::getDetectFacePos(int faceIdx, int pos[4])
 {
 	if(faceIdx>=getDetectFaceCount())

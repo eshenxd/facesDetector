@@ -1,28 +1,35 @@
-#include <atlimage.h>
-#include <time.h>
-#include <math.h>
-#include <string>
-#include <sstream>
-#include "io.h"
+#ifndef  HEADER_H
+#define HEADER_H
+
+
 #include <vector>
+#include <list>
+#include <iterator>
+#include <algorithm>
+#include <atlimage.h>
+#include <math.h>
 #include <iostream>
 
-#include<Windows.h>
 
-
-
-#include "../opencv/include/opencv/cv.h"
+#include "../opencv/include/opencv/cv.h" 
 #include "../opencv/include/opencv/highgui.h"
 #include "../opencv/include/opencv/cxcore.h"
 
-//Debug
-#pragma comment(lib, "../opencv/lib/opencv_core246d.lib")
-#pragma comment(lib, "../opencv/lib/opencv_objdetect246d.lib")
-#pragma comment(lib, "../opencv/lib/opencv_highgui246d.lib")
-#pragma comment(lib, "../opencv/lib/opencv_imgproc246d.lib")
 
-//Release
-#pragma comment(lib, "../opencv/lib/opencv_core246.lib")
-#pragma comment(lib, "../opencv/lib/opencv_objdetect246.lib")
-#pragma comment(lib, "../opencv/lib/opencv_highgui246.lib")
-#pragma comment(lib, "../opencv/lib/opencv_imgproc246.lib")
+#ifdef DEBUG
+
+#pragma comment(lib, "../opencv/lib/opencv_core248d.lib")
+#pragma comment(lib, "../opencv/lib/opencv_objdetect248d.lib")
+#pragma comment(lib, "../opencv/lib/opencv_highgui248d.lib")
+#pragma comment(lib, "../opencv/lib/opencv_imgproc248d.lib")
+
+#else
+
+#pragma comment(lib, "../opencv/lib/opencv_core248.lib")
+#pragma comment(lib, "../opencv/lib/opencv_objdetect248.lib")
+#pragma comment(lib, "../opencv/lib/opencv_highgui248.lib")
+#pragma comment(lib, "../opencv/lib/opencv_imgproc248.lib")
+
+#endif
+
+#endif

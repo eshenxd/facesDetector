@@ -1,4 +1,11 @@
-#pragma once
+/*
+ *   detect_face.h
+ *   Ethan
+ *   2015-06-18
+ */
+
+#ifndef _DETECT_FACE_H_
+#define _DETECT_FACE_H_
 
 #include "header.h"
 
@@ -15,21 +22,20 @@ struct _Rect //»À¡≥Œª÷√
 class FaceDetector//»À¡≥ºÏ≤‚∆˜
 {
 public:
-	FaceDetector(IplImage*);
+	FaceDetector(char* cascade_name_faces);
 	~FaceDetector();
+
+	bool initFaceDetector(IplImage* image);
+	void releaseFaceDetector();
 
 	int runFaceDetector();
 	int getDetectFaceCount();
 	int getDetectFacePos(int faceIndex, int pos[4]);
 	IplImage* getImageGray();
 
-protected:
-
 private:
 	int width;
 	int height;
-
-	//double* param;
 
 	IplImage* Frame;
 	IplImage* grayFrame;
@@ -40,6 +46,9 @@ private:
 	int faceCount;
 	double scale;
 
+	char* faceModelFile;
 	CvMemStorage* storage_faces;
-    CvHaarClassifierCascade* cascade_faces;
+	CvHaarClassifierCascade* cascade_faces;
 };
+
+#endif
