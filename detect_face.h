@@ -3,7 +3,7 @@
  *   Ethan
  *   2015-06-18
  */
-
+#pragma once
 #ifndef _DETECT_FACE_H_
 #define _DETECT_FACE_H_
 
@@ -22,7 +22,7 @@ struct _Rect //人脸位置
 class FaceDetector//人脸检测器
 {
 public:
-	FaceDetector(char* cascade_name_faces);
+	FaceDetector(char* cascade_name_faces = "face.xml");
 	~FaceDetector();
 
 	bool initFaceDetector(IplImage* image);
@@ -31,7 +31,9 @@ public:
 	int runFaceDetector();
 	int getDetectFaceCount();
 	int getDetectFacePos(int faceIndex, int pos[4]);
+	void getBigestFacePos(int pos[4]);  /* 获取面积最大的人脸的位置*/
 	IplImage* getImageGray();
+	void drawDetectedFaces( IplImage* image_draw , std::string showMsg ,CvScalar color=CV_RGB(0, 0, 255));/* 用矩形标出人脸位置，并在最大人脸位置输出信息*/
 
 private:
 	int width;
@@ -49,6 +51,8 @@ private:
 	char* faceModelFile;
 	CvMemStorage* storage_faces;
 	CvHaarClassifierCascade* cascade_faces;
+
+	int getBigestFaceIdx();
 };
 
 #endif

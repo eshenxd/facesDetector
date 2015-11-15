@@ -99,15 +99,9 @@ int FaceDetector::runFaceDetector()
 
 	double param[4] = { 1.2, 1.6, 2.0, 3.0 };
 
-	for (int i = 0; i < 4 ; i++){
-
-		faces = cvHaarDetectObjects(small_img, cascade_faces, storage_faces,
-			1.1, 3, 0/*CV_HAAR_DO_CANNY_PRUNING*/,
-			cvSize(20, 20));
-		
-		if (faces->total == 1)break;
-	}
-
+	faces = cvHaarDetectObjects(small_img, cascade_faces, storage_faces,
+		1.01, 3, 0/*CV_HAAR_DO_CANNY_PRUNING*/,
+		cvSize(20, 20));
 
 	faceCount=faces->total;
 
@@ -149,4 +143,54 @@ int FaceDetector::getDetectFacePos(int faceIdx, int pos[4])
 	pos[3] = facePos[faceIdx].bottom;
 
 	return 0;
+}
+
+int FaceDetector::getBigestFaceIdx()
+{
+	int area = 0;
+	int index = 0;
+	for(int idx = 0 ;idx<faceCount ;++idx){
+		int width = facePos[idx].right - facePos[idx].left;
+		int height = facePos[idx].top - facePos[idx].bottom;
+		if((width*height)>area){
+			area = width*height;
+			index = idx;
+		}
+	}
+	return index;
+}
+
+void FaceDetector::getBigestFacePos(int* pos)
+{
+	int index = getBigestFaceIdx();
+
+	pos[0] = facePos[index].left;
+	pos[1] = facePos[index].top;
+	pos[2] = facePos[index].right;
+	pos[3] = facePos[index].bottom;
+
+}
+
+void FaceDetector::drawDetectedFaces(IplImage* image_draw ,string showMsg ,CvScalar color){
+	
+	CvFont font;
+	double hScale = 1;
+	double vScale = 1;
+	int lineWidth = 2;// 相当于写字的线条
+
+	CvPoint p1,p2 ,p3;
+	int index = getBigestFaceIdx();
+	
+	for(int idx = 0; idx < faceCount; idx++)
+	{
+		p1 = cvPoint(facePos[idx].left,facePos[idx].top);
+		p2 = cvPoint(facePos[idx].right,facePos[idx].bottom);
+		cvRectangle(image_draw , p1 ,p2 ,CV_RGB(0,0,255),1,8,0);
+	}
+
+	p3 = cvPoint(facePos[index].left,(facePos[index].top - 10));
+	   
+	cvInitFont(&font, CV_FONT_HERSHEY_SIMPLEX | CV_FONT_ITALIC, hScale, vScale, 0, lineWidth);
+
+	cvPutText(image_draw, showMsg.c_str(), p3, &font, color);//在图片中输出字符
 }
