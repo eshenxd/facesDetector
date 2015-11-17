@@ -151,7 +151,7 @@ int FaceDetector::getBigestFaceIdx()
 	int index = 0;
 	for(int idx = 0 ;idx<faceCount ;++idx){
 		int width = facePos[idx].right - facePos[idx].left;
-		int height = facePos[idx].top - facePos[idx].bottom;
+		int height = facePos[idx].bottom - facePos[idx].top;
 		if((width*height)>area){
 			area = width*height;
 			index = idx;

@@ -1,4 +1,4 @@
-/*
+ */
  * 功能简介：detect faces in a picture
  * 作    者：Ethan
  * 编辑时间：2014年10月22日
@@ -17,7 +17,7 @@
         drawDetectedFaces、getBigestFaceIdx引
 		入多人脸检测，标识所有检测到的人脸，
 		同时，获取面积最大人脸的位置
- * v5.1 修改了新加入的drawDetectedFaces函数中，
-        标出人脸位置的图像
- *
-*/
+ * v5.1(2015-11-17) 修改了新加入的drawDetectedFaces
+        函数中，标出人脸位置的图像
+ * v5.2(2015-11-17) 更改了一个bug
+ */
