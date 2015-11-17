@@ -46,7 +46,7 @@ bool FaceDetector::initFaceDetector(IplImage* imageIn){
 
 	grayFrame=cvCreateImage(cvSize(width,height),8,1);
 	small_img=cvCreateImage(cvSize(cvRound(width/scale),cvRound(height/scale)),8,1);
-
+	
 	return true;
 
 }
@@ -100,7 +100,7 @@ int FaceDetector::runFaceDetector()
 	double param[4] = { 1.2, 1.6, 2.0, 3.0 };
 
 	faces = cvHaarDetectObjects(small_img, cascade_faces, storage_faces,
-		1.01, 3, 0/*CV_HAAR_DO_CANNY_PRUNING*/,
+		1.2, 3, 0/*CV_HAAR_DO_CANNY_PRUNING*/,
 		cvSize(20, 20));
 
 	faceCount=faces->total;
@@ -185,7 +185,7 @@ void FaceDetector::drawDetectedFaces(IplImage* image_draw ,string showMsg ,CvSca
 	{
 		p1 = cvPoint(facePos[idx].left,facePos[idx].top);
 		p2 = cvPoint(facePos[idx].right,facePos[idx].bottom);
-		cvRectangle(image_draw , p1 ,p2 ,CV_RGB(0,0,255),1,8,0);
+		drawRect(image_draw,p1,p2);
 	}
 
 	p3 = cvPoint(facePos[index].left,(facePos[index].top - 10));
@@ -193,4 +193,25 @@ void FaceDetector::drawDetectedFaces(IplImage* image_draw ,string showMsg ,CvSca
 	cvInitFont(&font, CV_FONT_HERSHEY_SIMPLEX | CV_FONT_ITALIC, hScale, vScale, 0, lineWidth);
 
 	cvPutText(image_draw, showMsg.c_str(), p3, &font, color);//ÔÚÍ¼Æ¬ÖÐÊä³ö×Ö·û
+}
+
+void FaceDetector::drawRect(IplImage* img ,CvPoint p1 ,CvPoint p2){
+
+	int dis_long_y = (p2.y - p1.y)/10;
+	int dis_long_x = (p2.x - p1.x)/10;
+	CvPoint top_left = p1;
+	CvPoint bottom_right = p2;
+	CvPoint top_right = cvPoint(p2.x,p1.y);
+	CvPoint bottom_left = cvPoint(p1.x,p2.y);
+
+	cvLine(img,top_left,cvPoint(top_left.x+dis_long_x,top_left.y),cvScalar(255,255,0),1,8,0);
+	cvLine(img,top_left,cvPoint(top_left.x,top_left.y+dis_long_y),cvScalar(255,255,0),1,8,0);
+	cvLine(img,top_right,cvPoint(top_right.x,top_right.y+dis_long_y),cvScalar(255,255,0),1,8,0);
+	cvLine(img,top_right,cvPoint(top_right.x - dis_long_x,top_right.y),cvScalar(255,255,0),1,8,0);
+
+	cvLine(img,bottom_left,cvPoint(bottom_left.x + dis_long_x,bottom_left.y),cvScalar(255,255,0),1,8,0);
+	cvLine(img,bottom_left,cvPoint(bottom_left.x,bottom_left.y-dis_long_y),cvScalar(255,255,0),1,8,0);
+	cvLine(img,bottom_right,cvPoint(bottom_right.x,bottom_right.y-dis_long_y),cvScalar(255,255,0),1,8,0);
+	cvLine(img,bottom_right,cvPoint(bottom_right.x - dis_long_x,bottom_right.y),cvScalar(255,255,0),1,8,0);
+
 }
